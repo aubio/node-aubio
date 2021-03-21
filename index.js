@@ -1,5 +1,5 @@
-var ffi = require('ffi');
-var ref = require('ref');
+var ffi = require('ffi-napi');
+var ref = require('ref-napi');
 
 var intPtr = ref.refType('int');
 //var stringPtr = ref.refType(ref.types.CString);

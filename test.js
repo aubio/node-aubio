@@ -1,5 +1,5 @@
 var aubio = require('./index.js');
-var ref = require('ref');
+var ref = require('ref-napi');
 
 var get_features = function(path, params) {
 
