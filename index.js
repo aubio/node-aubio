@@ -185,6 +185,28 @@ var aubio = ffi.Library('libaubio', {
     "aubio_wavetable_set_amp": [ "int", [ "pointer", "float" ]],
     "aubio_wavetable_get_amp": [ "float", [ "pointer" ]],
     "del_aubio_wavetable": [ "void", [ "pointer" ]],
+
+    // musicutils
+    "new_aubio_window": [ "pointer", [ "string", "int" ]],
+    "fvec_set_window": [ "int", [ "pointer", "string" ]],
+    "aubio_unwrap2pi": [ "float", [ "float" ]],
+    "aubio_bintomidi": [ "float", [ "float", "float", "float" ]],
+    "aubio_miditobin": [ "float", [ "float", "float", "float" ]],
+    "aubio_bintofreq": [ "float", [ "float", "float", "float" ]],
+    "aubio_freqtobin": [ "float", [ "float", "float", "float" ]],
+    "aubio_hztomel": [ "float", [ "float" ]],
+    "aubio_meltohz": [ "float", [ "float" ]],
+    "aubio_hztomel_htk": [ "float", [ "float" ]],
+    "aubio_meltohz_htk": [ "float", [ "float" ]],
+    "aubio_freqtomidi": [ "float", [ "float" ]],
+    "aubio_miditofreq": [ "float", [ "float" ]],
+    "aubio_cleanup": [ "void", []],
+    "aubio_zero_crossing_rate": [ "float", [ "pointer" ]],
+    "aubio_level_lin": [ "float", [ "pointer" ]],
+    "aubio_db_spl": [ "float", [ "pointer" ]],
+    "aubio_silence_detection": [ "int", [ "pointer", "float" ]],
+    "aubio_level_detection": [ "float", [ "pointer", "float" ]],
+    "fvec_clamp": [ "void", [ "pointer", "float" ]],
 });
 
 module.exports = aubio;
