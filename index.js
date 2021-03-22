@@ -14,18 +14,18 @@ var aubio = ffi.Library('libaubio', {
     "fvec_print": [ "void", [ "pointer" ]],
     "fvec_set_all": [ "void", [ "pointer", "float" ]],
     "fvec_zeros": [ "void", [ "pointer" ]],
+    "fvec_ones": [ "void", [ "pointer" ]],
     "fvec_rev": [ "void", [ "pointer" ]],
     "fvec_weight": [ "void", [ "pointer", "pointer" ]],
     "fvec_copy": [ "void", [ "pointer", "pointer" ]],
-    "fvec_ones": [ "void", [ "pointer" ]],
     "fvec_weighted_copy": [ "void", [ "pointer", "pointer", "pointer" ]],
 
     // cvec
     "new_cvec": [ "pointer", [ "int" ]],
     "del_cvec": [ "void", [ "pointer" ]],
-    "cvec_norm_get_sample": [ "float", [ "pointer", "int" ]],
     "cvec_norm_set_sample": [ "void", [ "pointer", "float", "int" ]],
     "cvec_phas_set_sample": [ "void", [ "pointer", "float", "int" ]],
+    "cvec_norm_get_sample": [ "float", [ "pointer", "int" ]],
     "cvec_phas_get_sample": [ "float", [ "pointer", "int" ]],
     "cvec_norm_get_data": [ "float", [ "pointer" ]],
     "cvec_phas_get_data": [ "float", [ "pointer" ]],
@@ -46,8 +46,8 @@ var aubio = ffi.Library('libaubio', {
     "aubio_source_do_multi": [ "void", [ "pointer", "pointer", intPtr ]],
     "aubio_source_get_samplerate": [ "int", [ "pointer" ]],
     "aubio_source_get_channels": [ "int", [ "pointer" ]],
-    "aubio_source_get_duration": [ "int", [ "pointer" ]],
     "aubio_source_seek": [ "int", [ "pointer", "int" ]],
+    "aubio_source_get_duration": [ "int", [ "pointer" ]],
     "aubio_source_close": [ "int", [ "pointer" ]],
     "del_aubio_source": [ "void", [ "pointer" ]],
 
@@ -63,10 +63,6 @@ var aubio = ffi.Library('libaubio', {
     "del_aubio_sink": [ "void", [ "pointer" ]],
 
     // filter
-    "new_aubio_filter": [ "pointer", [ "int" ]],
-    // new shortcuts
-    "new_aubio_filter_a_weighting": [ "pointer", [ "int" ]],
-    "new_aubio_filter_c_weighting": [ "pointer", [ "int" ]],
     // general do
     "aubio_filter_do": [ "void", [ "pointer", "pointer" ]],
     // variations
@@ -78,8 +74,12 @@ var aubio = ffi.Library('libaubio', {
     "aubio_filter_get_samplerate": [ "int", [ "pointer" ]],
     "aubio_filter_set_samplerate": [ "int", [ "pointer", "int" ]],
     "aubio_filter_do_reset": [ "void", [ "pointer", "pointer" ]],
+    "new_aubio_filter": [ "pointer", [ "int" ]],
     "del_aubio_filter": [ "void", [ "pointer" ]],
+    // new shortcuts
+    "new_aubio_filter_a_weighting": [ "pointer", [ "int" ]],
     "aubio_filter_set_a_weighting": [ "int", [ "pointer", "int" ]],
+    "new_aubio_filter_c_weighting": [ "pointer", [ "int" ]],
     "aubio_filter_set_c_weighting": [ "int", [ "pointer", "int" ]],
 
     // phase vocoder
@@ -124,19 +124,18 @@ var aubio = ffi.Library('libaubio', {
     "del_aubio_onset": [ "void", ["pointer"]],
 
     // pitch
-    "new_aubio_pitch": [ "pointer", [ "string", "int", "int", "int"]],
     "aubio_pitch_do": ["void", ["pointer", "pointer", "pointer"]],
     "aubio_pitch_set_tolerance": [ "int", ["pointer", "float"]],
     "aubio_pitch_get_tolerance": [ "float", ["pointer"]],
+    "del_aubio_pitch": [ "void", ["pointer"]],
+    "new_aubio_pitch": [ "pointer", [ "string", "int", "int", "int"]],
     "aubio_pitch_set_unit": ["int", ["pointer", "string"]],
     "aubio_pitch_set_silence": ["int", ["pointer", "float"]],
     "aubio_pitch_get_silence": ["float", ["pointer"]],
     "aubio_pitch_get_confidence": ["float", ["pointer"]],
-    "del_aubio_pitch": [ "void", ["pointer"]],
 
     // tempo
     "new_aubio_tempo": [ "pointer", [ "string", "int", "int", "int"]],
-    "del_aubio_tempo": [ "void", ["pointer"]],
     "aubio_tempo_do": [ "void", [ "pointer", "pointer", "pointer"]],
     "aubio_tempo_get_last": [ "int", ["pointer"]],
     "aubio_tempo_get_last_s": [ "float", ["pointer"]],
@@ -158,11 +157,12 @@ var aubio = ffi.Library('libaubio', {
     "aubio_tempo_set_delay": [ "int", [ "pointer", "int" ]],
     "aubio_tempo_set_delay_s": [ "int", [ "pointer", "float" ]],
     "aubio_tempo_set_delay_ms": [ "int", [ "pointer", "float" ]],
+    "del_aubio_tempo": [ "void", ["pointer"]],
 
     // mfcc
     "new_aubio_mfcc": [ "pointer", [ "int", "int", "int", "int"]],
-    "aubio_mfcc_do": ["void", ["pointer", "pointer", "pointer"]],
     "del_aubio_mfcc": [ "void", ["pointer"]],
+    "aubio_mfcc_do": ["void", ["pointer", "pointer", "pointer"]],
     "aubio_mfcc_set_power": [ "int", [ "pointer", "float" ]],
     "aubio_mfcc_get_power": [ "float", [ "pointer" ]],
     "aubio_mfcc_set_scale": [ "int", [ "pointer", "float" ]],
