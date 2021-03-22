@@ -126,7 +126,7 @@ var aubio = ffi.Library('libaubio', {
     // pitch
     "new_aubio_pitch": [ "pointer", [ "string", "int", "int", "int"]],
     "aubio_pitch_do": ["void", ["pointer", "pointer", "pointer"]],
-    "aubio_pitch_set_tolerance": [ "int", ["pointer", "int"]],
+    "aubio_pitch_set_tolerance": [ "int", ["pointer", "float"]],
     "aubio_pitch_get_tolerance": [ "float", ["pointer"]],
     "aubio_pitch_set_unit": ["int", ["pointer", "string"]],
     "aubio_pitch_set_silence": ["int", ["pointer", "float"]],
