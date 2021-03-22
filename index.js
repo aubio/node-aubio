@@ -1,5 +1,5 @@
-var ffi = require('ffi');
-var ref = require('ref');
+var ffi = require('ffi-napi');
+var ref = require('ref-napi');
 
 var intPtr = ref.refType('int');
 //var stringPtr = ref.refType(ref.types.CString);
@@ -14,16 +14,19 @@ var aubio = ffi.Library('libaubio', {
     "fvec_print": [ "void", [ "pointer" ]],
     "fvec_set_all": [ "void", [ "pointer", "float" ]],
     "fvec_zeros": [ "void", [ "pointer" ]],
+    "fvec_ones": [ "void", [ "pointer" ]],
     "fvec_rev": [ "void", [ "pointer" ]],
     "fvec_weight": [ "void", [ "pointer", "pointer" ]],
     "fvec_copy": [ "void", [ "pointer", "pointer" ]],
-    "fvec_ones": [ "void", [ "pointer" ]],
+    "fvec_weighted_copy": [ "void", [ "pointer", "pointer", "pointer" ]],
 
     // cvec
     "new_cvec": [ "pointer", [ "int" ]],
     "del_cvec": [ "void", [ "pointer" ]],
-    "cvec_norm_get_sample": [ "float", [ "pointer", "int" ]],
     "cvec_norm_set_sample": [ "void", [ "pointer", "float", "int" ]],
+    "cvec_phas_set_sample": [ "void", [ "pointer", "float", "int" ]],
+    "cvec_norm_get_sample": [ "float", [ "pointer", "int" ]],
+    "cvec_phas_get_sample": [ "float", [ "pointer", "int" ]],
     "cvec_norm_get_data": [ "float", [ "pointer" ]],
     "cvec_phas_get_data": [ "float", [ "pointer" ]],
     "cvec_print": [ "void", [ "pointer" ]],
@@ -35,6 +38,7 @@ var aubio = ffi.Library('libaubio', {
     "cvec_phas_zeros": [ "void", [ "pointer" ]],
     "cvec_phas_ones": [ "void", [ "pointer" ]],
     "cvec_zeros": [ "void", [ "pointer" ]],
+    "cvec_logmag": [ "void", [ "pointer", "float" ]],
 
     // source
     "new_aubio_source": [ "pointer", [ "string", "int", "int" ]],
@@ -42,8 +46,8 @@ var aubio = ffi.Library('libaubio', {
     "aubio_source_do_multi": [ "void", [ "pointer", "pointer", intPtr ]],
     "aubio_source_get_samplerate": [ "int", [ "pointer" ]],
     "aubio_source_get_channels": [ "int", [ "pointer" ]],
-    "aubio_source_get_duration": [ "int", [ "pointer" ]],
     "aubio_source_seek": [ "int", [ "pointer", "int" ]],
+    "aubio_source_get_duration": [ "int", [ "pointer" ]],
     "aubio_source_close": [ "int", [ "pointer" ]],
     "del_aubio_source": [ "void", [ "pointer" ]],
 
@@ -59,17 +63,24 @@ var aubio = ffi.Library('libaubio', {
     "del_aubio_sink": [ "void", [ "pointer" ]],
 
     // filter
-    "new_aubio_filter": [ "pointer", [ "int" ]],
-    // new shortcuts
-    "new_aubio_filter_a_weighting": [ "pointer", [ "int" ]],
-    "new_aubio_filter_c_weighting": [ "pointer", [ "int" ]],
     // general do
     "aubio_filter_do": [ "void", [ "pointer", "pointer" ]],
     // variations
     "aubio_filter_do_outplace": [ "void", [ "pointer", "pointer", "pointer" ]],
     "aubio_filter_do_filtfilt": [ "void", [ "pointer", "pointer" ]],
+    "aubio_filter_get_feedback": [ "pointer", [ "pointer" ]],
+    "aubio_filter_get_feedforward": [ "pointer", [ "pointer" ]],
+    "aubio_filter_get_order": [ "int", [ "pointer" ]],
+    "aubio_filter_get_samplerate": [ "int", [ "pointer" ]],
+    "aubio_filter_set_samplerate": [ "int", [ "pointer", "int" ]],
     "aubio_filter_do_reset": [ "void", [ "pointer", "pointer" ]],
+    "new_aubio_filter": [ "pointer", [ "int" ]],
     "del_aubio_filter": [ "void", [ "pointer" ]],
+    // new shortcuts
+    "new_aubio_filter_a_weighting": [ "pointer", [ "int" ]],
+    "aubio_filter_set_a_weighting": [ "int", [ "pointer", "int" ]],
+    "new_aubio_filter_c_weighting": [ "pointer", [ "int" ]],
+    "aubio_filter_set_c_weighting": [ "int", [ "pointer", "int" ]],
 
     // phase vocoder
     "new_aubio_pvoc": [ "pointer", [ "int", "int" ]],
@@ -78,6 +89,7 @@ var aubio = ffi.Library('libaubio', {
     "aubio_pvoc_rdo": [ "void", [ "pointer", "pointer", "pointer" ]],
     //"aubio_pvoc_get_win": [ "int", [ "pointer" ]],
     //"aubio_pvoc_get_hop": [ "int", [ "pointer" ]],
+    "aubio_pvoc_set_window": [ "int", [ "pointer", "string" ]],
 
     // onset
     "new_aubio_onset": [ "pointer", [ "string", "int", "int", "int"]],
@@ -85,6 +97,10 @@ var aubio = ffi.Library('libaubio', {
     "aubio_onset_get_last": [ "int", ["pointer"]],
     "aubio_onset_get_last_s": [ "float", ["pointer"]],
     "aubio_onset_get_last_ms": [ "float", ["pointer"]],
+    "aubio_onset_set_awhitening": [ "int", [ "pointer", "int" ]],
+    "aubio_onset_get_awhitening": [ "float", [ "pointer" ]],
+    "aubio_onset_set_compression": [ "int", [ "pointer", "float" ]],
+    "aubio_onset_get_compression": [ "float", [ "pointer" ]],
     "aubio_onset_set_silence": [ "int", ["pointer", "float"]],
     "aubio_onset_get_silence": [ "float", ["pointer"]],
     "aubio_onset_get_descriptor": [ "float", ["pointer"]],
@@ -103,21 +119,23 @@ var aubio = ffi.Library('libaubio', {
     "aubio_onset_get_delay_s": [ "float", ["pointer"]],
     "aubio_onset_get_delay_ms": [ "float", ["pointer"]],
     "aubio_onset_get_threshold": [ "float", ["pointer"]],
+    "aubio_onset_set_default_parameters": [ "int", [ "pointer", "string" ]],
+    "aubio_onset_reset": [ "void", [ "pointer" ]],
     "del_aubio_onset": [ "void", ["pointer"]],
 
     // pitch
-    "new_aubio_pitch": [ "pointer", [ "string", "int", "int", "int"]],
     "aubio_pitch_do": ["void", ["pointer", "pointer", "pointer"]],
-    "aubio_pitch_set_tolerance": [ "int", ["pointer", "int"]],
+    "aubio_pitch_set_tolerance": [ "int", ["pointer", "float"]],
+    "aubio_pitch_get_tolerance": [ "float", ["pointer"]],
+    "del_aubio_pitch": [ "void", ["pointer"]],
+    "new_aubio_pitch": [ "pointer", [ "string", "int", "int", "int"]],
     "aubio_pitch_set_unit": ["int", ["pointer", "string"]],
     "aubio_pitch_set_silence": ["int", ["pointer", "float"]],
     "aubio_pitch_get_silence": ["float", ["pointer"]],
     "aubio_pitch_get_confidence": ["float", ["pointer"]],
-    "del_aubio_pitch": [ "void", ["pointer"]],
 
     // tempo
     "new_aubio_tempo": [ "pointer", [ "string", "int", "int", "int"]],
-    "del_aubio_tempo": [ "void", ["pointer"]],
     "aubio_tempo_do": [ "void", [ "pointer", "pointer", "pointer"]],
     "aubio_tempo_get_last": [ "int", ["pointer"]],
     "aubio_tempo_get_last_s": [ "float", ["pointer"]],
@@ -130,11 +148,65 @@ var aubio = ffi.Library('libaubio', {
     "aubio_tempo_get_period_s": [ "float", ["pointer"]],
     "aubio_tempo_get_bpm": [ "float", ["pointer"]],
     "aubio_tempo_get_confidence": [ "float", ["pointer"]],
+    "aubio_tempo_set_tatum_signature": [ "int", [ "pointer", "int" ]],
+    "aubio_tempo_was_tatum": [ "int", [ "pointer" ]],
+    "aubio_tempo_get_last_tatum": [ "float", [ "pointer" ]],
+    "aubio_tempo_get_delay": [ "int", [ "pointer" ]],
+    "aubio_tempo_get_delay_s": [ "float", [ "pointer" ]],
+    "aubio_tempo_get_delay_ms": [ "float", [ "pointer" ]],
+    "aubio_tempo_set_delay": [ "int", [ "pointer", "int" ]],
+    "aubio_tempo_set_delay_s": [ "int", [ "pointer", "float" ]],
+    "aubio_tempo_set_delay_ms": [ "int", [ "pointer", "float" ]],
+    "del_aubio_tempo": [ "void", ["pointer"]],
 
     // mfcc
     "new_aubio_mfcc": [ "pointer", [ "int", "int", "int", "int"]],
-    "aubio_mfcc_do": ["void", ["pointer", "pointer", "pointer"]],
     "del_aubio_mfcc": [ "void", ["pointer"]],
+    "aubio_mfcc_do": ["void", ["pointer", "pointer", "pointer"]],
+    "aubio_mfcc_set_power": [ "int", [ "pointer", "float" ]],
+    "aubio_mfcc_get_power": [ "float", [ "pointer" ]],
+    "aubio_mfcc_set_scale": [ "int", [ "pointer", "float" ]],
+    "aubio_mfcc_get_scale": [ "float", [ "pointer" ]],
+    "aubio_mfcc_set_mel_coeffs": [ "int", [ "pointer", "float", "float" ]],
+    "aubio_mfcc_set_mel_coeffs_htk": [ "int", [ "pointer", "float", "float" ]],
+    "aubio_mfcc_set_mel_coeffs_slaney": [ "int", [ "pointer" ]],
+
+    // wavetable
+    "new_aubio_wavetable": [ "pointer", [ "int", "int" ]],
+    "aubio_wavetable_load": [ "int", [ "pointer", "string" ]],
+    "aubio_wavetable_do": [ "void", [ "pointer", "pointer", "pointer" ]],
+    "aubio_wavetable_do_multi": [ "void", [ "pointer", "pointer", "pointer" ]],
+    "aubio_wavetable_get_playing": [ "int", [ "pointer" ]],
+    "aubio_wavetable_set_playing": [ "int", [ "pointer", "int" ]],
+    "aubio_wavetable_play": [ "int", [ "pointer" ]],
+    "aubio_wavetable_stop": [ "int", [ "pointer" ]],
+    "aubio_wavetable_set_freq": [ "int", [ "pointer", "float" ]],
+    "aubio_wavetable_get_freq": [ "float", [ "pointer" ]],
+    "aubio_wavetable_set_amp": [ "int", [ "pointer", "float" ]],
+    "aubio_wavetable_get_amp": [ "float", [ "pointer" ]],
+    "del_aubio_wavetable": [ "void", [ "pointer" ]],
+
+    // musicutils
+    "new_aubio_window": [ "pointer", [ "string", "int" ]],
+    "fvec_set_window": [ "int", [ "pointer", "string" ]],
+    "aubio_unwrap2pi": [ "float", [ "float" ]],
+    "aubio_bintomidi": [ "float", [ "float", "float", "float" ]],
+    "aubio_miditobin": [ "float", [ "float", "float", "float" ]],
+    "aubio_bintofreq": [ "float", [ "float", "float", "float" ]],
+    "aubio_freqtobin": [ "float", [ "float", "float", "float" ]],
+    "aubio_hztomel": [ "float", [ "float" ]],
+    "aubio_meltohz": [ "float", [ "float" ]],
+    "aubio_hztomel_htk": [ "float", [ "float" ]],
+    "aubio_meltohz_htk": [ "float", [ "float" ]],
+    "aubio_freqtomidi": [ "float", [ "float" ]],
+    "aubio_miditofreq": [ "float", [ "float" ]],
+    "aubio_cleanup": [ "void", []],
+    "aubio_zero_crossing_rate": [ "float", [ "pointer" ]],
+    "aubio_level_lin": [ "float", [ "pointer" ]],
+    "aubio_db_spl": [ "float", [ "pointer" ]],
+    "aubio_silence_detection": [ "int", [ "pointer", "float" ]],
+    "aubio_level_detection": [ "float", [ "pointer", "float" ]],
+    "fvec_clamp": [ "void", [ "pointer", "float" ]],
 });
 
 module.exports = aubio;

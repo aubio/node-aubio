@@ -1,5 +1,5 @@
 var aubio = require('../');
-var ref = require('ref');
+var ref = require('ref-napi');
 
 var extract_mfcc = function(inputfile, params) {
 

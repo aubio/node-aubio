@@ -1,5 +1,5 @@
 var aubio = require('../');
-var ref = require('ref');
+var ref = require('ref-napi');
 
 var filter_source = function(inputfile, outputfile, params) {
 
