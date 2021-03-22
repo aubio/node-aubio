@@ -170,6 +170,21 @@ var aubio = ffi.Library('libaubio', {
     "aubio_mfcc_set_mel_coeffs": [ "int", [ "pointer", "float", "float" ]],
     "aubio_mfcc_set_mel_coeffs_htk": [ "int", [ "pointer", "float", "float" ]],
     "aubio_mfcc_set_mel_coeffs_slaney": [ "int", [ "pointer" ]],
+
+    // wavetable
+    "new_aubio_wavetable": [ "pointer", [ "int", "int" ]],
+    "aubio_wavetable_load": [ "int", [ "pointer", "string" ]],
+    "aubio_wavetable_do": [ "void", [ "pointer", "pointer", "pointer" ]],
+    "aubio_wavetable_do_multi": [ "void", [ "pointer", "pointer", "pointer" ]],
+    "aubio_wavetable_get_playing": [ "int", [ "pointer" ]],
+    "aubio_wavetable_set_playing": [ "int", [ "pointer", "int" ]],
+    "aubio_wavetable_play": [ "int", [ "pointer" ]],
+    "aubio_wavetable_stop": [ "int", [ "pointer" ]],
+    "aubio_wavetable_set_freq": [ "int", [ "pointer", "float" ]],
+    "aubio_wavetable_get_freq": [ "float", [ "pointer" ]],
+    "aubio_wavetable_set_amp": [ "int", [ "pointer", "float" ]],
+    "aubio_wavetable_get_amp": [ "float", [ "pointer" ]],
+    "del_aubio_wavetable": [ "void", [ "pointer" ]],
 });
 
 module.exports = aubio;
